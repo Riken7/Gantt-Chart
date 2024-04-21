@@ -12,16 +12,23 @@ interface DisplayProps{
 }
 export default function Display({numProcesses}:DisplayProps){ {
     const [processes ,setProcesses] = useState<Process[]>([]);
-    let render = numProcesses;
-    console.log(render);
+    const handleInputChange = (index:number,key:string,value:string)=>{
+        const updatedProcesses = [...processes];
+        updatedProcesses[index] = {...updatedProcesses[index],[key]:parseFloat(value)};
+        setProcesses(updatedProcesses);
+    }
     const addProcesses = ()=>{
         const inputs : ReactElement[] = [];
-        for(let i=1; i<=render; i++){
+        for(let i=1; i<=numProcesses; i++){
             inputs.push(
                 <div key={i}>
                     <div>Process {i}</div>
-                    <input type="number" id={`AT-${i}`} step={0.1} name="arrivalTime" placeholder={`Process ${i} Arrival Time`}></input>
-                    <input type="number" id={`BT-${i}`} step={0.1} name="burstTime" placeholder={`Process ${i} Burst Time`}></input>
+                    <input type="number" id={`AT-${i}`} step={0.1} name="arrivalTime" placeholder={`Process ${i} Arrival Time`} onChange={(e)=>{
+                        handleInputChange(i-1,'arrivalTime',e.target.value);
+                    }}></input>
+                    <input type="number" id={`BT-${i}`} step={0.1} name="burstTime" placeholder={`Process ${i} Burst Time`} onChange={(e)=>{
+                        handleInputChange(i-1,'burstTime',e.target.value);
+                    }}></input>
                 </div>
             );
         }
@@ -48,19 +55,15 @@ export default function Display({numProcesses}:DisplayProps){ {
         }
         
 }
-const [calc , setcalc] = useState<{ AT: number; BT: number; }>({ AT: 0, BT: 0 });
-const updatecalc = () => {
-    const resp = calculationPart();
-    setcalc(resp);
-}
+
     return (
         <div>
             {addProcesses()}
             {
-            addProcesses().length>0 && (
+            processes.length>0 && (
                 <div>
-                        <div>Average Arrival Time: {calc.AT}</div>
-                        <div>Average Burst Time: {calc.BT}</div>
+                        <div>Average Arrival Time: {calculationPart().AT}</div>
+                        <div>Average Burst Time: {calculationPart().BT}</div>
                     </div>
             )
         }
