@@ -1,7 +1,7 @@
 import { Process } from "./Process";
 import data from "@/global/data.json";
 
-export function Home() {
+export function Gantt() {
   let i: number = 0;
 
   let totaltime: number = parseInt(data.TotalTime);
