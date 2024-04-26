@@ -1,8 +1,8 @@
 "use client"
 import React , {ReactElement, useState} from 'react';
-import number from './Processes';
+
 interface Process{
-    id:number;
+    processId:number;
     arrivalTime:number;
     burstTime:number;
 }
@@ -12,9 +12,10 @@ interface DisplayProps{
 }
 export default function Display({numProcesses}:DisplayProps){ {
     const [processes ,setProcesses] = useState<Process[]>([]);
+    const [calculationResult, setCalculationResult] = useState<JSX.Element | null>(null);
     const handleInputChange = (index:number,key:string,value:string)=>{
         const updatedProcesses = [...processes];
-        updatedProcesses[index] = {...updatedProcesses[index],[key]:parseFloat(value)};
+        updatedProcesses[index] = {...updatedProcesses[index],[key]:parseFloat(value),processId:index+1};
         setProcesses(updatedProcesses);
     }
     const addProcesses = ()=>{
@@ -34,39 +35,53 @@ export default function Display({numProcesses}:DisplayProps){ {
         }
         return inputs;
     }
-    
-    const calculationPart = ()=>{
-        let AT = 0;
-        let BT = 0;
-        if(processes.length===0){
-            return{
-                AT:0,
-                BT:0
-            };
-        }
-        processes.forEach((process)=>{
-                AT += process.arrivalTime;
-                BT += process.burstTime;
-        });
-        console.log(AT,BT);
-        return {
-            AT:AT/processes.length,
-            BT:BT/processes.length,
-        }
-        
-}
+    const Calculate = (processes: Process[])=>{
+        const calArr : Process[] = processes;
+        // for(let i=0;i<calArr.length-1;i++){
+        //     if(processes[i].arrivalTime>processes[i+1].arrivalTime){
+        //         const temp = processes[i];
+        //         processes[i] = processes[i+1];
+        //         processes[i+1] = temp;
+        //     }
+        //  =>will not work 
+        // }
 
+        calArr.sort((a,b)=>a.arrivalTime-b.arrivalTime);
+        let arrivalTime = 0,finishTime = 0;
+        let turnAroundTime = 0, waitingTime = 0;
+        let avgTurnAroundTime = 0 , avgWaitingTime = 0;
+        for(let p of processes){
+            if(p.arrivalTime>arrivalTime){
+                arrivalTime = p.arrivalTime;
+            }
+            finishTime = arrivalTime + p.burstTime; 
+            turnAroundTime = finishTime - p.arrivalTime; 
+            waitingTime = turnAroundTime - p.burstTime;
+            avgTurnAroundTime += turnAroundTime; 
+            avgWaitingTime += waitingTime; 
+
+            arrivalTime = finishTime;
+        }
+        avgTurnAroundTime /= processes.length;
+        avgWaitingTime /= processes.length;
+
+        console.log(calArr);
+        
+        return (
+            <div>
+                <div>Average Turn Around Time : {avgTurnAroundTime}</div>
+                <div>Average Waiting Time : {avgWaitingTime}</div>
+            </div>
+        );
+    }
+    
     return (
         <div>
             {addProcesses()}
-            {
-            processes.length>0 && (
-                <div>
-                        <div>Average Arrival Time: {calculationPart().AT}</div>
-                        <div>Average Burst Time: {calculationPart().BT}</div>
-                    </div>
-            )
-        }
+            <button onClick={()=>{
+                setCalculationResult(Calculate(processes));
+            }}>Calculate</button>
+            {calculationResult}
         
         </div>
            

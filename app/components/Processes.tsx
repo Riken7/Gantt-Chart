@@ -5,17 +5,17 @@ export default function Processes() {
     const [numProcesses, setNumProcesses] = useState<number>(0);
     const inputChange = (e : ChangeEvent<HTMLInputElement>)=>{
         const value = parseInt(e.target.value);
-        setNumProcesses(value);
-        console.log(value);
+        if(isNaN(value)){
+            setNumProcesses(0);
+        }else{ 
+            setNumProcesses(value);
+        }
     }
-    const number = numProcesses;
     return (
         <div>
             Enter the number of processes you want to simulate :
             <input type="number" id="processes" name="processes" value={numProcesses} min={0} max={10} onChange={inputChange}></input>
-            {numProcesses>0 && (
-                <Display numProcesses={numProcesses}/>
-            )}
+            {<Display numProcesses={numProcesses}/>}
         </div>
     );
     
