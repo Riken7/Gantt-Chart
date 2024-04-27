@@ -1,20 +1,19 @@
 "use client"
 import React , {ReactElement, useState} from 'react';
-import F from './F';
 export interface Process{
     processId:number;
     arrivalTime:number;
     burstTime:number;
 }
-
 interface DisplayProps{
     numProcesses:number;
     select : String;
 }
 
 export default function Display({numProcesses,select}:DisplayProps){ {
-    const [processes ,setProcesses] = useState<Process[]>([]);
+    const [processes,setProcesses] = useState<Process[]>([]);
     const [calcResult,setCalcResult] = useState<{avgTurnAroundTime: number, avgWaitingTime: number} | null>(null);
+    const [executedP, setExecutedP] = useState<Process[]>([]);
     const handleInputChange = (index:number,key:string,value:string)=>{
         const updatedProcesses = [...processes];
         updatedProcesses[index] = {...updatedProcesses[index],[key]:parseFloat(value),processId:index+1};
@@ -42,6 +41,7 @@ export default function Display({numProcesses,select}:DisplayProps){ {
                         <input type="number" id={`P-${i}`} step={1} name="priority" placeholder={`Process ${i} Priority`} onChange={(e)=>{
                             handleInputChange(i-1,'priority',e.target.value);
                         }}></input>
+
                     )}
                 </div>
             );
@@ -53,6 +53,7 @@ export default function Display({numProcesses,select}:DisplayProps){ {
         if(select === "FCFS"){
             console.log("Calculating data for FCFS");
             const calArr : Process[] = processes;
+            let executedP : Process[] = [];
                 calArr.sort((a,b)=>a.arrivalTime-b.arrivalTime);
                 let arrivalTime = 0,finishTime = 0;
                 let turnAroundTime = 0, waitingTime = 0;
@@ -61,6 +62,7 @@ export default function Display({numProcesses,select}:DisplayProps){ {
                     if(p.arrivalTime>arrivalTime){
                         arrivalTime = p.arrivalTime;
                     }
+                    executedP.push(p);
                     finishTime = arrivalTime + p.burstTime; 
                     turnAroundTime = finishTime - p.arrivalTime; 
                     waitingTime = turnAroundTime - p.burstTime;
@@ -68,6 +70,7 @@ export default function Display({numProcesses,select}:DisplayProps){ {
                     avgWaitingTime += waitingTime;
                     arrivalTime = finishTime;
                 }
+                setExecutedP(executedP);
                 avgTurnAroundTime = (avgTurnAroundTime/calArr.length).toFixed(2);
                 avgWaitingTime = (avgWaitingTime/calArr.length).toFixed(2);
                 let result = {avgTurnAroundTime,avgWaitingTime};
@@ -144,10 +147,23 @@ export default function Display({numProcesses,select}:DisplayProps){ {
                     <div>
                     <div>Average Turn Around Time : {calcResult.avgTurnAroundTime}</div>
                     <div>Average Waiting Time : {calcResult.avgWaitingTime}</div>
-                    </div>
-                )}
+                </div> )}
             </div>
+            <div>
+                {executedP.length > 0 && (
+                    <div>
+                    <h2>Gantt Chart : </h2>
+                    <div className='flex flex-row '>
+                    {executedP.map((process,index)=>(
+                        <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{width: `${process.burstTime * 20}px`}} >
+                            <div className='p-1'>
+                            P{process.processId} </div>
+                        </div>
+                    ))}</div></div>
+                    )}
+            </div>
+
         </div>
     );
-}
+    }
 }

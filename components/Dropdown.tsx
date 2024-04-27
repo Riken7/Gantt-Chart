@@ -32,6 +32,13 @@ export default function Dropdown() {
                 </div>
             );
             break;
+        case "Round Robin":
+            present = (
+                <div>
+                    <h1>Round Robin</h1>
+                </div>
+            );
+            break;
         default:
             present = (
                 present = (
@@ -49,6 +56,7 @@ export default function Dropdown() {
                 }}>FCFS (First Come First Server)</option>
                 <option value="SJF" onClick={()=>{console.log("SJF selected")}}>SJF (Shortest Job First)</option>
                 <option value="PRIORITY" onClick={()=> {console.log("Priority selected")}}>Priority Non-preemptive</option>
+                <option value="Round Robin" onClick={()=>{console.log("Round Robin selected")}}>Round Robin</option>
             </select>
             {present}
             {
