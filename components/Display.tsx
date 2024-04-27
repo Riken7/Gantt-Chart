@@ -49,7 +49,6 @@ export default function Display({ numProcesses, select }: DisplayProps) {
                             <input type="number" id={`P-${i}`} step={1} name="priority" pattern="^[0-9]*$" placeholder={`Process ${i} Priority`} onChange={(e) => {
                                 handleInputChange(i - 1, 'priority', e.target.value);
                             }}></input>
-
                         )}
                     </div>
                 );
@@ -140,6 +139,40 @@ export default function Display({ numProcesses, select }: DisplayProps) {
                         break;
                     }
                 }
+                let avgTurnAroundTime = (totalTurnAroundTime / processes.length).toFixed(2);
+                let avgWaitingTime = (totalWaitingTime / processes.length).toFixed(2);
+                let result = { avgTurnAroundTime, avgWaitingTime };
+                return result;
+            }
+            else if (select == "Round Robin") {
+                console.log("calculating data for Round Robin");
+                let calArr: Process[] = [...processes]; // create a copy of processes
+                let quantum = 2;
+                let time = 0;
+                let turnAroundTime = 0, waitingTime = 0;
+                let totalTurnAroundTime = 0, totalWaitingTime = 0;
+                // while (calArr.length > 0) {
+                //     for (let i = 0; i < calArr.length; i++) {
+                //         if (calArr[i].arrivalTime > time) {
+                //             time++;
+                //             break;
+                //         }
+                //         let current = calArr.splice(i, 1)[0]; // remove the current process from calArr
+                //         waitingTime = time - current.arrivalTime;
+                //         if (current.burstTime > quantum) {
+                //             time += quantum;
+                //             current.burstTime -= quantum;
+                //             calArr.push(current);
+                //         }
+                //         else {
+                //             time += current.burstTime;
+                //             turnAroundTime = time - current.arrivalTime;
+                //             totalTurnAroundTime += turnAroundTime;
+                //             totalWaitingTime += waitingTime;
+                //         }
+                //         break;
+                //     }
+                // }
                 let avgTurnAroundTime = (totalTurnAroundTime / processes.length).toFixed(2);
                 let avgWaitingTime = (totalWaitingTime / processes.length).toFixed(2);
                 let result = { avgTurnAroundTime, avgWaitingTime };
