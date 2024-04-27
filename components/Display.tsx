@@ -174,7 +174,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                     }
                     if(newArr.length > 0){
                         let current = newArr.shift()!;
-                        executedP.push(current);
+                        executedP.push({...current});
                         if(current.burstTime > qt){
                             time+=qt;
                             current.burstTime -= qt;
@@ -192,15 +192,17 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                             time += csgo;
                         }
                         setExecutedP(executedP);
+                        
                 }else{
                     time++;
                 }
                 
             }
-                
+            
                 let avgTurnAroundTime = (totalTurnAroundTime / processes.length).toFixed(2);
                 let avgWaitingTime = (totalWaitingTime / processes.length).toFixed(2);
                 let result = { avgTurnAroundTime, avgWaitingTime };
+                console.log(executedP);
                 return result;
 
 
@@ -231,8 +233,15 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                         <div>
                             <h2>Gantt Chart : </h2>
                             <div className='flex flex-row '>
-                                {executedP.map((process, index) => (
+                                {select!="Round Robin" && executedP.map((process, index) => (
                                     <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${process.burstTime * 20}px` }} >
+                                        <div className='p-1'>
+                                            P{process.processId} </div>
+                                    </div>
+                                ))
+                                }
+                                {select==="Round Robin" && executedP.map((process, index) => (
+                                    <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${ (process.burstTime -quantum > 0) ? quantum* 20 : (process.burstTime)*20}px` }} >
                                         <div className='p-1'>
                                             P{process.processId} </div>
                                     </div>
