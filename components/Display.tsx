@@ -94,6 +94,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
             else if (select === "SJF") {
                 console.log("calculating data for SJF");
                 let calArr: Process[] = [...processes]; // copy of processes
+                let executedP: Process[] = [];
                 calArr.sort((a, b) => a.arrivalTime - b.arrivalTime || a.burstTime - b.burstTime); // sort by arrival time, then by burst time
                 let time = 0;
                 let turnAroundTime = 0, waitingTime = 0;
@@ -104,7 +105,9 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                             time++;
                             break;
                         }
+
                         let current = calArr.splice(i, 1)[0];
+                        executedP.push(current);
                         waitingTime = time - current.arrivalTime;
                         turnAroundTime = waitingTime + current.burstTime;
                         totalTurnAroundTime += turnAroundTime;
@@ -114,6 +117,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                         break;
                     }
                 }
+                setExecutedP(executedP);
                 let avgTurnAroundTime = ((totalTurnAroundTime / processes.length).toFixed(2));
                 let avgWaitingTime = ((totalWaitingTime / processes.length).toFixed(2));
                 let result = { avgTurnAroundTime, avgWaitingTime };
@@ -122,6 +126,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
             else if (select === "PRIORITY") {
                 console.log("calculating data for Priority");
                 let calArr: Process[] = [...processes]; // create a copy of processes
+                let executedP: Process[] = [];
                 calArr.sort((a, b) => a.arrivalTime - b.arrivalTime || a.priority! - b.priority!); // sort by arrival time, then by priority
                 let time = 0;
                 let turnAroundTime = 0, waitingTime = 0;
@@ -133,6 +138,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                             break;
                         }
                         let current = calArr.splice(i, 1)[0]; // remove the current process from calArr
+                        executedP.push(current);
                         waitingTime = time - current.arrivalTime;
                         turnAroundTime = waitingTime + current.burstTime;
                         totalTurnAroundTime += turnAroundTime;
@@ -142,6 +148,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                         break;
                     }
                 }
+                setExecutedP(executedP);
                 let avgTurnAroundTime = (totalTurnAroundTime / processes.length).toFixed(2);
                 let avgWaitingTime = (totalWaitingTime / processes.length).toFixed(2);
                 let result = { avgTurnAroundTime, avgWaitingTime };
@@ -184,11 +191,13 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                             totalWaitingTime += waitingTime;
                             time += csgo;
                         }
+                        setExecutedP(executedP);
                 }else{
                     time++;
                 }
+                
             }
-                setExecutedP(executedP);
+                
                 let avgTurnAroundTime = (totalTurnAroundTime / processes.length).toFixed(2);
                 let avgWaitingTime = (totalWaitingTime / processes.length).toFixed(2);
                 let result = { avgTurnAroundTime, avgWaitingTime };
