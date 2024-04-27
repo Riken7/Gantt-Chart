@@ -5,13 +5,16 @@ export interface Process {
     arrivalTime: number;
     burstTime: number;
     priority?: number;
+    Btime?:number;
 }
 interface DisplayProps {
     numProcesses: number;
     select: string;
+    quantum?: number;
+    contextSwitch?: number;
 }
 
-export default function Display({ numProcesses, select }: DisplayProps) {
+export default function Display({ numProcesses, select ,quantum , contextSwitch }: DisplayProps) {
     {
         const [processes, setProcesses] = useState<Process[]>([]);
         const [calcResult, setCalcResult] = useState<{ avgTurnAroundTime: string, avgWaitingTime: string }>();
@@ -146,37 +149,52 @@ export default function Display({ numProcesses, select }: DisplayProps) {
             }
             else if (select == "Round Robin") {
                 console.log("calculating data for Round Robin");
-                let calArr: Process[] = [...processes]; // create a copy of processes
-                let quantum = 2;
+                console.log(quantum , "and", contextSwitch);
+                let calArr: Process[] = processes.map((p)=>({...p, Btime: p.burstTime}));
+                let executedP: Process[] = [];
+                calArr.sort((a, b) => a.arrivalTime - b.arrivalTime);
+                let newArr: Process[] = [];
+                let qt:number = quantum!;
+                let csgo:number = contextSwitch!;
                 let time = 0;
                 let turnAroundTime = 0, waitingTime = 0;
                 let totalTurnAroundTime = 0, totalWaitingTime = 0;
-                // while (calArr.length > 0) {
-                //     for (let i = 0; i < calArr.length; i++) {
-                //         if (calArr[i].arrivalTime > time) {
-                //             time++;
-                //             break;
-                //         }
-                //         let current = calArr.splice(i, 1)[0]; // remove the current process from calArr
-                //         waitingTime = time - current.arrivalTime;
-                //         if (current.burstTime > quantum) {
-                //             time += quantum;
-                //             current.burstTime -= quantum;
-                //             calArr.push(current);
-                //         }
-                //         else {
-                //             time += current.burstTime;
-                //             turnAroundTime = time - current.arrivalTime;
-                //             totalTurnAroundTime += turnAroundTime;
-                //             totalWaitingTime += waitingTime;
-                //         }
-                //         break;
-                //     }
-                // }
+                while(calArr.length > 0  || newArr.length > 0){
+                    console.log("First loop");
+                    while(calArr.length > 0 && calArr[0].arrivalTime <= time){
+                        console.log("Second loop ? ")
+                        newArr.push(calArr.shift()!);
+                    }
+                    if(newArr.length > 0){
+                        let current = newArr.shift()!;
+                        executedP.push(current);
+                        if(current.burstTime > qt){
+                            time+=qt;
+                            current.burstTime -= qt;
+                            while(calArr.length > 0 && calArr[0].arrivalTime <= time){
+                                newArr.push(calArr.shift()!);
+                            }
+                            newArr.push(current);
+                            time += csgo;
+                        }else{
+                            time += current.burstTime;
+                            turnAroundTime = time - current.arrivalTime;
+                            waitingTime = turnAroundTime - current.Btime;
+                            totalTurnAroundTime += turnAroundTime;
+                            totalWaitingTime += waitingTime;
+                            time += csgo;
+                        }
+                }else{
+                    time++;
+                }
+            }
+                setExecutedP(executedP);
                 let avgTurnAroundTime = (totalTurnAroundTime / processes.length).toFixed(2);
                 let avgWaitingTime = (totalWaitingTime / processes.length).toFixed(2);
                 let result = { avgTurnAroundTime, avgWaitingTime };
                 return result;
+
+
             }
             else {
                 return { avgTurnAroundTime: "NaN", avgWaitingTime: "NaN" };

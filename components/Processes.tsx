@@ -14,6 +14,26 @@ export default function Processes({ select }: select) {
             setNumProcesses(value);
         }
     }
+    const [quantum, setQuantum] = useState<number>(0);
+    const [contextSwitch, setContextSwitch] = useState<number>(0);
+    const handleInputChange = (name: string, value: number) => {
+        switch (name) {
+            case 'quantum':
+                if (value < 0) {
+                    alert("Quantum Time cannot be negative");
+                    return;
+                }
+                setQuantum(value);
+                break;
+            case 'contextSwitch':
+                if (value < 0) {
+                    alert("Context Switch Time cannot be negative");
+                    return;
+                }
+                setContextSwitch(value);
+                break;
+        }
+    }
 
     return (
         <div>
@@ -22,11 +42,17 @@ export default function Processes({ select }: select) {
             {(select === "Round Robin") && (
                 <div>
                     Enter Quantum Time and Context Switch Time :
-                    <input className="m-2" type="number" id="quantum" name="quantum" placeholder="Enter Quantum"></input>
-                    <input className="m-2" type="number" id="contextSwitch" name="contextSwitch" placeholder="Enter Context Switch"></input>
+                    <input className="m-2" type="number" id="quantum" name="quantum" placeholder="Enter Quantum Time" onChange={(e)=>{
+                        handleInputChange('quantum', parseInt(e.target.value));
+                        console.log(e.target.value);
+                    }}></input>
+                    <input className="m-2" type="number" id="contextSwitch" name="contextSwitch" placeholder="Enter Context Switch" onChange={(e)=>{
+                        handleInputChange('contextSwitch', parseInt(e.target.value));
+                        console.log(e.target.value);
+                    }}></input>
                 </div>
             )}
-            <Display numProcesses={numProcesses} select={select} />
+            <Display numProcesses={numProcesses} select={select} quantum={quantum} contextSwitch={contextSwitch} />
 
         </div>
     );
