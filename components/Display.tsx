@@ -233,11 +233,19 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                         <div>
                             <h2>Gantt Chart : </h2>
                             <div className='flex flex-row '>
-                                {select!="Round Robin" && executedP.map((process, index) => (
+                                {select!=="Round Robin" && executedP.map((process, index) => (
+                                    <div>
                                     <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${process.burstTime * 20}px` }} >
                                         <div className='p-1'>
-                                            P{process.processId} </div>
+                                            P{process.processId}
+                                        </div>
                                     </div>
+                                    <div className='flex justify-between'>
+                                        <div>{process.arrivalTime}</div>
+                                        <div>{process.arrivalTime+process.burstTime}</div>
+                                    </div>
+                                    </div>
+
                                 ))
                                 }
                                 {select==="Round Robin" && executedP.map((process, index) => (
@@ -248,7 +256,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                 ))}</div></div>
                     )}
                 </div>
-
+                    
             </div>
         );
     }
