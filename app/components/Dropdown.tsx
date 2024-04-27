@@ -1,10 +1,10 @@
 "use client"
-import { useRouter } from 'next/router';
 import React , { useState } from 'react';
 import Processes from './Processes';
-
+export interface select{
+    selected:string;
+}
 export default function Dropdown() {
-    // const Router = useRouter();
     const [selected, setSelected] = useState("");
     const selectHandler = (e : any) => {
         setSelected(e.target.value);
@@ -53,9 +53,10 @@ export default function Dropdown() {
             {present}
             {
                 selected && (
-                    <Processes />
+                    <Processes select={selected} />
                 )
             }
+
 
         </div>
 
