@@ -240,7 +240,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                             P{process.processId}
                                         </div>
                                     </div>
-                                    <div className='flex justify-between'>
+                                    <div className='flex justify-between ml-1 mr-1'>
                                         <div>{process.arrivalTime}</div>
                                         <div>{process.arrivalTime+process.burstTime}</div>
                                     </div>
@@ -249,9 +249,15 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                 ))
                                 }
                                 {select==="Round Robin" && executedP.map((process, index) => (
+                                    <div>
                                     <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${ (process.burstTime -quantum > 0) ? quantum* 20 : (process.burstTime)*20}px` }} >
                                         <div className='p-1'>
                                             P{process.processId} </div>
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <div>{process.arrivalTime}</div>
+                                        <div>{process.arrivalTime+process.burstTime}</div>
+                                    </div>
                                     </div>
                                 ))}</div></div>
                     )}
