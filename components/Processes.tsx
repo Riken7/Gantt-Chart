@@ -2,7 +2,7 @@
 import React,{ChangeEvent, ReactElement, useState} from "react";
 import Display from "./Display";
 interface select{
-    select : String;
+    select : string;
 }
 export default function Processes({select}: select) {
     const [numProcesses, setNumProcesses] = useState<number>(0);
