@@ -120,7 +120,7 @@ export default function Display({numProcesses,select}:DisplayProps){ {
                     totalTurnAroundTime += turnAroundTime;
                     totalWaitingTime += waitingTime;
                     time += current.burstTime;
-                    calArr.sort((a,b)=>a.arrivalTime-b.arrivalTime || a.priority-b.priority); // sort again after removing a process
+                    calArr.sort((a,b)=>a.priority-b.priority); // sort again after removing a process
                     break;
                 }
             }
