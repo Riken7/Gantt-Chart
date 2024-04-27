@@ -17,14 +17,16 @@ export default function Processes({select}: select) {
     return (
         <div>
             Enter the number of processes you want to simulate :
-            <input type="number" id="processes" name="processes" value={numProcesses} min={0} max={10} onChange={inputChange}></input>
-            <Display numProcesses={numProcesses} select={select} />
+            <input type="number" id="processes" name="processes" value={numProcesses} max={10} onChange={inputChange}></input>
             {(select === "Round Robin") && (
                     <div>
-                        <input type="number" id="quantum" name="quantum" placeholder="Enter Quantum"></input>
-                        <input type="number" id="contextSwitch" name="contextSwitch" placeholder="Enter Context Switch"></input>
+                        Enter Quantum Time and Context Switch Time :
+                        <input className="m-2" type="number" id="quantum" name="quantum" placeholder="Enter Quantum"></input>
+                        <input className="m-2" type="number" id="contextSwitch" name="contextSwitch" placeholder="Enter Context Switch"></input>
                     </div>
                     )}
+            <Display numProcesses={numProcesses} select={select} />
+
         </div>
     );
     

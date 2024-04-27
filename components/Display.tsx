@@ -31,14 +31,14 @@ export default function Display({numProcesses,select}:DisplayProps){ {
             inputs.push(
                 <div key={i}>
                     <div>Process {i}</div>
-                    <input type="number" id={`AT-${i}`} step={0.1} name="arrivalTime" placeholder={`Process ${i} Arrival Time`} onChange={(e)=>{
+                    <input type="number" id={`AT-${i}`} step={0.1} name="arrivalTime" pattern="^[0-9]*$" placeholder={`Process ${i} Arrival Time`} onChange={(e)=>{
                         handleInputChange(i-1,'arrivalTime',e.target.value);
                     }}></input>
-                    <input type="number" id={`BT-${i}`} step={0.1} name="burstTime" placeholder={`Process ${i} Burst Time`} onChange={(e)=>{
+                    <input type="number" id={`BT-${i}`} step={0.1} name="burstTime" pattern="^[0-9]*$" placeholder={`Process ${i} Burst Time`} onChange={(e)=>{
                         handleInputChange(i-1,'burstTime',e.target.value);
                     }}></input>
                     {(select === "PRIORITY") && (
-                        <input type="number" id={`P-${i}`} step={1} name="priority" placeholder={`Process ${i} Priority`} onChange={(e)=>{
+                        <input type="number" id={`P-${i}`} step={1} name="priority" pattern="^[0-9]*$" placeholder={`Process ${i} Priority`} onChange={(e)=>{
                             handleInputChange(i-1,'priority',e.target.value);
                         }}></input>
 
@@ -139,9 +139,11 @@ export default function Display({numProcesses,select}:DisplayProps){ {
     return (
         <div>
             {addProcesses()}
-            <button onClick={()=>{
-                calcHandle(processes,select);
-            }}>Calculate</button>
+            {numProcesses > 0 && (
+                <button onClick={()=>{
+                    calcHandle(processes,select);
+                }}>Calculate</button>
+            )}
             <div>
                 {calcResult &&(
                     <div>
