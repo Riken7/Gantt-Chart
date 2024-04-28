@@ -136,30 +136,28 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                 let turnAroundTime = 0, waitingTime = 0;
                 let totalTurnAroundTime = 0, totalWaitingTime = 0;
                 while (calArr.length > 0) {
-                    for (let i = 0; i < calArr.length; i++) {
-                        if (calArr[i].arrivalTime > time) {
-                            time++;
-                            break;
+                        let current = calArr.shift()!;
+                        if (current.arrivalTime > time) {
+                            calArr.push(current);
+                        }else{
+                            let Execute = { ...current, Start : time, End : time + current.burstTime}
+                            executedP.push(Execute);
+                            waitingTime = time - current.arrivalTime;
+                            turnAroundTime = waitingTime + current.burstTime;
+                            totalTurnAroundTime += turnAroundTime;
+                            totalWaitingTime += waitingTime;
+                            time += current.burstTime;
+                            calArr.sort((a, b) => a.priority! - b.priority!); // sort again after removing a process
                         }
-                        let current = calArr.splice(i, 1)[0]; // remove the current process from calArr
-                        let Execute = { ...current, Start : time, End : time + current.burstTime}
-                        executedP.push(Execute);
-                        waitingTime = time - current.arrivalTime;
-                        turnAroundTime = waitingTime + current.burstTime;
-                        totalTurnAroundTime += turnAroundTime;
-                        totalWaitingTime += waitingTime;
-                        time += current.burstTime;
-                        calArr.sort((a, b) => a.priority! - b.priority!); // sort again after removing a process
-                        break;
                     }
-                }
                 setExecutedP(executedP);
+                console.log(executedP);
                 let avgTurnAroundTime = (totalTurnAroundTime / processes.length).toFixed(2);
                 let avgWaitingTime = (totalWaitingTime / processes.length).toFixed(2);
                 let result = { avgTurnAroundTime, avgWaitingTime };
                 return result;
             }
-            else if (select == "Round Robin") {
+            else if (select === "Round Robin") {
                 console.log("calculating data for Round Robin");
                 let calArr: Process[] = processes.map((p)=>({...p, Btime: p.burstTime}));
                 let executedP: Process[] = [];
