@@ -242,32 +242,76 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                             <h2>Gantt Chart : </h2>
                             <div className='flex flex-row '>
                                 {select!=="Round Robin" && executedP.map((process, index) => (
-                                    <div key={index}>
-                                    <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${process.burstTime * 20}px` }} >
+                                    <div key={`p-${index}`} className='flex'>
+                                        { //gap between processes
+                                            index>0 && process.Start > executedP[index-1].End  && (
+                                            <div className='text-2xl border-solid border-2 text-center' style={{ width: `${(process.Start - executedP[index-1].End)*20}px` }} ></div>)
+                                        }
+                                    <div key={`p-child-${index}`} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${process.burstTime * 20}px` }} >
                                         <div className='p-1'>
                                             P{process.processId}
                                         </div>
                                     </div>
-                                    <div className='flex justify-between ml-1 mr-1'>
+                                    {/* <div className='flex justify-between ml-1 mr-1'>
                                         <div>{process.Start}</div>
                                         <div>{process.End}</div>
-                                    </div>
+                                    </div> */}
                                     </div>
 
                                 ))
                                 }
                                 {select==="Round Robin" && executedP.map((process, index) => (
-                                    <div>
-                                    <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${ (process.burstTime -quantum > 0) ? quantum* 20 : (process.burstTime)*20}px` }} >
+                                    <div key={`RR-p-${index}`} className='flex'>
+                                        { //gap between processes
+                                            index>0 && process.Start > (executedP[index-1].End + contextSwitch) && (
+                                            <div className='text-2xl border-solid border-2 text-center  ' style={{ width: `${(process.Start - executedP[index-1].End)*20}px` }} ></div>)
+                                        }
+                                    <div key={`RR-c1-${index}`} className='flex text-2xl border-solid border-2 text-center justify-center items-center ' style={{ width: `${ (process.burstTime -quantum > 0) ? quantum* 20 : (process.burstTime)*20}px` }} >
+                                        
                                         <div className='p-1'>
-                                            P{process.processId} </div>
+                                            P{process.processId}    
+                                        </div>
                                     </div>
-                                    <div className='flex justify-between'>
+                                    {index < executedP.length - 1 && executedP[index+1].Start <= (process.End + contextSwitch) && (
+                                        <div className='text-2xl border-solid border-2 text-center' style={{ width: `${(contextSwitch>0)? contextSwitch*20 : 0}px` }} ></div>
+                                            )}
+                                    </div>
+                                ))}
+                                
+                                </div>
+                                <div className='flex flex-row'>
+                                {select!=="Round Robin" && executedP.map((process, index) => (
+                                    <>{
+                                        index>0 && (process.Start > executedP[index-1].End) && (
+                                            <div style={{ width: `${(process.Start - executedP[index-1].End)*20}px` }}></div>
+                                        )     
+                                    }
+                                    <div key={`c-${index}`} className='flex justify-between' style={{ width: `${process.burstTime * 20}px` }}>
+                                    {/* { index === 0 && (
                                         <div>{process.Start}</div>
-                                        <div>{process.End}</div>
-                                    </div>
-                                    </div>
-                                ))}</div></div>
+                                    )} */}
+                                    {/* { index > 0 && (process.Start !== executedP[index-1].End) && (
+                                        <div>{process.Start}</div>
+                                    )} */}
+                                    <div>{process.Start}</div>
+                                    <div>{process.End}</div>
+                                    
+                                    </div></>))
+                                }    
+                                {select==="Round Robin" && executedP.map((process, index) => (
+                                        <>{
+                                            index >0 && process.Start > executedP[index-1].End && (
+                                                <div style={{ width: `${(process.Start - executedP[index-1].End)*20}px` }}></div>
+                                            )     
+                                        }
+                                    <div key={`RR-c2-${index}`} className='flex justify-between' style={{ width: `${ (process.burstTime -quantum > 0) ? quantum* 20 : (process.burstTime)*20}px` }}>
+                                    
+                                    <div>{process.Start}</div>
+                                    <div>{process.End}</div>
+                                    
+                                    </div></>)
+                                )}
+                                </div></div>
                     )}
                 </div>
                     
