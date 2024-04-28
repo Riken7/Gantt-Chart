@@ -6,6 +6,8 @@ export interface Process {
     burstTime: number;
     priority?: number;
     Btime?:number;
+    Start?:number;
+    End?:number;
 }
 interface DisplayProps {
     numProcesses: number;
@@ -77,7 +79,9 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                     if (p.arrivalTime > arrivalTime) {
                         arrivalTime = p.arrivalTime;
                     }
-                    executedP.push(p);
+                    let Execute = { ...p, Start : arrivalTime, End : arrivalTime + p.burstTime}
+                    console.log(Execute);
+                    executedP.push(Execute);
                     finishTime = arrivalTime + p.burstTime;
                     turnAroundTime = finishTime - p.arrivalTime;
                     waitingTime = turnAroundTime - p.burstTime;
@@ -107,7 +111,8 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                         }
 
                         let current = calArr.splice(i, 1)[0];
-                        executedP.push(current);
+                        let Execute = { ...current, Start : time, End : time + current.burstTime}
+                        executedP.push(Execute);
                         waitingTime = time - current.arrivalTime;
                         turnAroundTime = waitingTime + current.burstTime;
                         totalTurnAroundTime += turnAroundTime;
@@ -138,7 +143,8 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                             break;
                         }
                         let current = calArr.splice(i, 1)[0]; // remove the current process from calArr
-                        executedP.push(current);
+                        let Execute = { ...current, Start : time, End : time + current.burstTime}
+                        executedP.push(Execute);
                         waitingTime = time - current.arrivalTime;
                         turnAroundTime = waitingTime + current.burstTime;
                         totalTurnAroundTime += turnAroundTime;
@@ -167,14 +173,16 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                 let turnAroundTime = 0, waitingTime = 0;
                 let totalTurnAroundTime = 0, totalWaitingTime = 0;
                 while(calArr.length > 0  || newArr.length > 0){
-                    console.log("First loop");
+                    // console.log("First loop");
                     while(calArr.length > 0 && calArr[0].arrivalTime <= time){
-                        console.log("Second loop ? ")
+                        // console.log("Second loop  ")
                         newArr.push(calArr.shift()!);
                     }
                     if(newArr.length > 0){
                         let current = newArr.shift()!;
-                        executedP.push({...current});
+                        let Execute = { ...current, Start : time, End : time + ((current.burstTime -qt > 0) ? qt : current.burstTime)}
+                        executedP.push({...Execute});
+                        console.log(executedP)
                         if(current.burstTime > qt){
                             time+=qt;
                             current.burstTime -= qt;
@@ -234,15 +242,15 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                             <h2>Gantt Chart : </h2>
                             <div className='flex flex-row '>
                                 {select!=="Round Robin" && executedP.map((process, index) => (
-                                    <div>
+                                    <div key={index}>
                                     <div key={index} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${process.burstTime * 20}px` }} >
                                         <div className='p-1'>
                                             P{process.processId}
                                         </div>
                                     </div>
                                     <div className='flex justify-between ml-1 mr-1'>
-                                        <div>{process.arrivalTime}</div>
-                                        <div>{process.arrivalTime+process.burstTime}</div>
+                                        <div>{process.Start}</div>
+                                        <div>{process.End}</div>
                                     </div>
                                     </div>
 
@@ -255,8 +263,8 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                             P{process.processId} </div>
                                     </div>
                                     <div className='flex justify-between'>
-                                        <div>{process.arrivalTime}</div>
-                                        <div>{process.arrivalTime+process.burstTime}</div>
+                                        <div>{process.Start}</div>
+                                        <div>{process.End}</div>
                                     </div>
                                     </div>
                                 ))}</div></div>
