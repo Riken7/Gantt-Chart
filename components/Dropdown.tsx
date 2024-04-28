@@ -49,7 +49,7 @@ export default function Dropdown() {
             )
     }    
     return (
-        <div>
+        <div className='text-center m-2 '>
             <select onChange={selectHandler} value={selected}>
                 <option value="">Select Algorithm</option>
                 <option value="FCFS" onClick={()=>{console.log("FCFS selected")

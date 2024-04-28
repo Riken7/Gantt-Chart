@@ -36,11 +36,11 @@ export default function Processes({ select }: select) {
     }
 
     return (
-        <div>
-            Enter the number of processes you want to simulate :
+        <div className="text-base">
+            Enter the number of processes:
             <input type="number" id="processes" name="processes" value={numProcesses} max={10} onChange={inputChange}></input>
             {(select === "Round Robin") && (
-                <div>
+                <div >
                     Enter Quantum Time and Context Switch Time :
                     <input className="m-2" type="number" id="quantum" name="quantum" placeholder="Enter Quantum Time" onChange={(e)=>{
                         handleInputChange('quantum', parseInt(e.target.value));
