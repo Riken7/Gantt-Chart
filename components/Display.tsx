@@ -1,4 +1,5 @@
 "use client"
+import exp from 'constants';
 import React, { ReactElement, useState } from 'react';
 export interface Process {
     processId: number;
@@ -99,33 +100,31 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                 console.log("calculating data for SJF");
                 let calArr: Process[] = [...processes]; // copy of processes
                 let executedP: Process[] = [];
-                calArr.sort((a, b) => a.arrivalTime - b.arrivalTime || a.burstTime - b.burstTime); // sort by arrival time, then by burst time
+                let newArr: Process[] = [];
+                calArr.sort((a, b) => a.burstTime - b.burstTime); // sort by arrival time, then by burst time
                 let time = 0;
                 let turnAroundTime = 0, waitingTime = 0;
                 let totalTurnAroundTime = 0, totalWaitingTime = 0;
                 while (calArr.length > 0) {
-                    for (let i = 0; i < calArr.length; i++) {
-                        if (calArr[i].arrivalTime > time) {
-                            time++;
-                            break;
+                        let current = calArr.shift()!;
+                        if (current.arrivalTime > time) {
+                            calArr.push(current);
+                        }else{
+                            let Execute = { ...current, Start : time, End : time + current.burstTime}
+                            executedP.push(Execute);
+                            waitingTime = time - current.arrivalTime;
+                            turnAroundTime = waitingTime + current.burstTime;
+                            totalTurnAroundTime += turnAroundTime;
+                            totalWaitingTime += waitingTime;
+                            time += current.burstTime;
+                            calArr.sort((a, b) => a.burstTime - b.burstTime); // sort again after removing a process
                         }
-
-                        let current = calArr.splice(i, 1)[0];
-                        let Execute = { ...current, Start : time, End : time + current.burstTime}
-                        executedP.push(Execute);
-                        waitingTime = time - current.arrivalTime;
-                        turnAroundTime = waitingTime + current.burstTime;
-                        totalTurnAroundTime += turnAroundTime;
-                        totalWaitingTime += waitingTime;
-                        time += current.burstTime;
-                        calArr.sort((a, b) => a.burstTime - b.burstTime); // sort again after removing a process
-                        break;
-                    }
-                }
+                        }
                 setExecutedP(executedP);
                 let avgTurnAroundTime = ((totalTurnAroundTime / processes.length).toFixed(2));
                 let avgWaitingTime = ((totalWaitingTime / processes.length).toFixed(2));
                 let result = { avgTurnAroundTime, avgWaitingTime };
+                console.log(executedP);
                 return result;
             }
             else if (select === "PRIORITY") {
