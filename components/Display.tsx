@@ -243,7 +243,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                             index>0 && (process.Start ?? 0) > (executedP[index-1].End ?? 0)  && (
                                             <div key={`p-gap-${index}`}className='text-2xl border-solid border-2 text-center' style={{ width: `${((process.Start ?? 0) - (executedP[index-1].End ?? 0))*20}px` }} ></div>)
                                         }
-                                        <div key={`p-child-${index}`} className='text-2xl border-solid border-2 text-center  ' style={{ width: `${process.burstTime * 20}px` }} >
+                                        <div key={`p-child-${index}`} className='text-2xl border-solid border-2 text-center' style={{ width: `${process.burstTime * 20}px` }} >
                                             <div className='p-1 text-lg '>
                                              P{process.processId}
                                             </div>
@@ -284,13 +284,13 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                         )     
                                     }
                                     <div key={`c-${index}`} className='flex justify-between text-base' style={{ width: `${process.burstTime * 20}px` }}>
-                                    {/* { index === 0 && (
+                                    { index === 0 && (
                                         <div>{process.Start}</div>
-                                    )} */}
-                                    {/* { index > 0 && (process.Start !== executedP[index-1].End) && (
+                                    )}
+                                    { index > 0 && (process.Start !== executedP[index-1].End) && (
                                         <div>{process.Start}</div>
-                                    )} */}
-                                    <div>{process.Start}</div>
+                                    )}
+                                    <div></div>
                                     <div>{process.End}</div>
                                     
                                     </div></div>))
@@ -302,8 +302,14 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                             )     
                                         }
                                     <div key={`RR-c2-${index}`} className='flex justify-between' style={{ width: `${ (process.burstTime -(quantum??0) > 0) ? (quantum??0)* 20 : (process.burstTime)*20}px` }}>
+                                    { index === 0 && (
+                                        <div>{process.Start}</div>
+                                    )}
+                                    { index > 0 && (process.Start !== executedP[index-1].End) && (
+                                        <div>{process.Start}</div>
                                     
-                                    <div>{process.Start}</div>
+                                    )}
+                                    <div></div>
                                     <div>{process.End}</div>
                                     
                                     </div></>)
