@@ -236,7 +236,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                     {executedP.length > 0 && numProcesses > 0 && (
                         <div>
                             <h2 className='text-xl m-2'>Gantt Chart : </h2>
-                            <div className='mt-4 flex flex-row items-center justify-center'>
+                            <div className='w-max mt-4 flex flex-row items-center justify-center'>
                                 {select!=="Round Robin" && executedP.map((process, index) => (
                                     <div key={index} className='flex'>
                                         { //gap between processes
@@ -275,7 +275,7 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                 ))}
                                 
                                 </div>
-                                <div className='flex flex-row justify-center'>
+                                <div className='w-max flex flex-row justify-center'>
                                 {select!=="Round Robin" && executedP.map((process, index) => (
                                     <div key={index} className='flex'>{
                                         index>0 && ((process.Start??0) > (executedP[index-1].End??0)) && (
