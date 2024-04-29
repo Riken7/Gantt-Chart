@@ -3,8 +3,8 @@
 @tailwind utilities; 
 
 body {
-  background: white;
-  background: -webkit-linear-gradient(0deg, #474bff 0%, #bc48ff 100%);
-  background: linear-gradient(0deg, #474bff 0%, #bc48ff 100%);
+  background-color: #9cc4d7;
+  /* background: -webkit-linear-gradient(0deg, #474bff 0%, #bc48ff 100%);
+  background: linear-gradient(0deg, #474bff 0%, #bc48ff 100%); */
   min-height: 100vh; 
 }
