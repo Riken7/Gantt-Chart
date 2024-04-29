@@ -109,6 +109,8 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                         let current = calArr.shift()!;
                         if (current.arrivalTime > time) {
                             calArr.push(current);
+                            calArr.sort((a, b) => a.arrivalTime - b.arrivalTime);
+                            time = calArr[0].arrivalTime;
                         }else{
                             let Execute = { ...current, Start : time, End : time + current.burstTime}
                             executedP.push(Execute);
@@ -139,6 +141,8 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                         let current = calArr.shift()!;
                         if (current.arrivalTime > time) {
                             calArr.push(current);
+                            calArr.sort((a, b) => a.arrivalTime - b.arrivalTime);
+                            time = calArr[0].arrivalTime;
                         }else{
                             let Execute = { ...current, Start : time, End : time + current.burstTime}
                             executedP.push(Execute);
