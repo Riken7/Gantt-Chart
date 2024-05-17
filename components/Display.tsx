@@ -105,8 +105,20 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                 let time = 0;
                 let turnAroundTime = 0, waitingTime = 0;
                 let totalTurnAroundTime = 0, totalWaitingTime = 0;
-                while (calArr.length > 0) {
-                        let current = calArr.shift()!;
+                while (calArr.length > 0 || newArr.length > 0) {
+                    for(let i = 0; i < calArr.length; i++){
+                        let current = calArr[i];
+                        if(current.arrivalTime <= time){
+                            newArr.push(current);
+                            newArr.sort((a, b) => a.burstTime - b.burstTime);
+                            calArr.splice(i, 1);
+                        }
+                    }
+                    if(newArr.length === 0){
+                        time++;
+                        continue;
+                    }
+                    let current = newArr.shift()!;
                         if (current.arrivalTime > time) {
                             calArr.push(current);
                             calArr.sort((a, b) => a.arrivalTime - b.arrivalTime);
@@ -264,16 +276,16 @@ export default function Display({ numProcesses, select ,quantum , contextSwitch 
                                     <div key={`RR-p-${index}`} className='flex'>
                                         { //gap between processes
                                             index>0 && (process.Start??0) > ((executedP[index-1].End ??0) + (contextSwitch??0)) && (
-                                            <div className='text-2xl border-solid border-2 text-center  ' style={{ width: `${((process.Start??0) - (executedP[index-1].End??0))*20}px` }} ></div>)
+                                            <div className='text-2xl border-solid border-black border-2 text-center  ' style={{ width: `${((process.Start??0) - (executedP[index-1].End??0))*20}px` }} ></div>)
                                         }
-                                    <div key={`RR-c1-${index}`} className='flex text-2xl border-solid border-2 text-center justify-center items-center ' style={{ width: `${ (process.burstTime -(quantum??0) > 0) ? (quantum??0)* 20 : (process.burstTime)*20}px` }} >
+                                    <div key={`RR-c1-${index}`} className='flex text-2xl border-solid border-black border-2 text-center justify-center items-center ' style={{ width: `${ (process.burstTime -(quantum??0) > 0) ? (quantum??0)* 20 : (process.burstTime)*20}px` }} >
                                         
                                         <div className='p-1 text-lg'>
                                             P{process.processId}    
                                         </div>
                                     </div>
                                     {index < executedP.length - 1 && (executedP[index+1].Start??0) <= ((process.End??0) + (contextSwitch??0)) && (
-                                        <div className='text-2xl border-solid border-2 text-center' style={{ width: `${(contextSwitch??0>0)? (contextSwitch??0)*20 : 0}px` }} ></div>
+                                        <div className='text-2xl border-solid border-black border-2 text-center' style={{ width: `${(contextSwitch??0>0)? (contextSwitch??0)*20 : 0}px` }} ></div>
                                             )}
                                     </div>
                                 ))}
